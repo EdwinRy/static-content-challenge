@@ -33,27 +33,25 @@ function getTemplatedPage(pagePath)
     return page;
 }
 
-// Get blog post page
-app.get("/blog/:month/:post", (req, res)=>{
-    const page = getTemplatedPage(`./client/content/blog/${req.params.month}/${req.params.post}/index.md`);
-    res.set('Content-Type', 'text/html');
-    res.status(200).send(Buffer.from(page));
-})
+// Get any route
+app.get("*", (req, res) => {
 
-// Get any other page
-app.get("/:page", (req, res) => {
-    const page = getTemplatedPage(`./client/content/${req.params.page}/index.md`);
+    // Send templated page based on url from the request
+    const page = getTemplatedPage(`./client/content${req.url}/index.md`);
+
+    // Send the rendered page if it succeeded
     if(page.length > 0)
     {
         res.set('Content-Type', 'text/html');
         res.status(200).send(Buffer.from(page));
     }
-    else{
+    // Send a 404 otherwise
+    else
+    {
         res.status(404).send();
     }
 
 })
-
 
 app.listen(80, () => {})
 
